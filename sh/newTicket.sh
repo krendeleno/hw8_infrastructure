@@ -28,6 +28,8 @@ response=$(
 }'
 )
 
+echo $response
+
 if [ $response = 201 ]; then
   echo "Release created successfully"
 elif [ $response = 404 ]; then
@@ -56,6 +58,8 @@ elif [ $response = 409 ]; then
         "summary":"'"$summary"'",
         "description":"'"$description"'"
     }')
+
+    echo $updateResponse
 
     if [ $updateResponse = 200 ]; then
       echo "Release updated successfully"
