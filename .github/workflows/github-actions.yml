@@ -1,8 +1,5 @@
 name: github-actions
-on:
-  push:
-    tags:
-      - '*'
+on: [push]
 jobs:
   check-bats-version:
     runs-on: ubuntu-latest
@@ -12,9 +9,12 @@ jobs:
         with:
           node-version: '14'
       - run: npm install
-      - run: npm run test
 
-      - run: sh ./sh/newTicket.sh
+      - name: run tests
+        run: npm run test
+
+      - name: create ticket
+        run: sh ./sh/newTicket.sh
         env:
           OAuth: ${{ secrets.OAuth }}
           XOrgId: ${{ secrets.XOrgId }}
