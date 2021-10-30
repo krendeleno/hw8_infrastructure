@@ -13,3 +13,8 @@ jobs:
           node-version: '14'
       - run: npm install
       - run: npm run test
+
+      - run: sh ./sh/newTicket.sh
+        env:
+          OAuth: ${{ secrets.OAuth }}
+          XOrgId: ${{ secrets.XOrgId }}
