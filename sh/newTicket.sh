@@ -2,32 +2,66 @@
 
 currentTag=$(git tag | tail -1)
 prevTag=$(git tag | tail -2 | head -1)
-author=$(git show $currentTag| grep Author: )
-date=$(git show $currentTag | grep Date:)
+author=$(git show $currentTag  --pretty=format:"Author: %an" --date=format:'%Y-%m-%d %H:%M:%S' --no-patch)
+date=$(git show $currentTag  --pretty=format:"Date: %ad" --date=format:'%Y-%m-%d %H:%M:%S'  --no-patch)
 if [ $currentTag = $prevTag ]; then
-  gitlog=$(git log $currentTag)
+  gitlog=$(git log $currentTag --pretty=format:"* %H\n%ae\n%an%x09")
 else
-  gitlog=$(git log $prevTag..$currentTag)
+    gitlog=$(git log $prevTag..$currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y-%m-%d %H:%M:%S')
 fi
 
 unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
-description="$currentTag\n$author\n$date\n$gitlog"
+description=$(echo "**$currentTag\n$author\n$date**\n\nCommit history:\n$gitlog" | tr -s "\n" " ")
+summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 
-response=$(curl -s --request POST  "https://api.tracker.yandex.net/v2/issues/" -H "Content-Type: application/json" -H "Authorization: OAuth $OAuth" -H "X-Org-Id: $XOrgId" \
+response=$(
+  curl -s -o dev/null -w '%{http_code}' -X POST https://api.tracker.yandex.net/v2/issues \
+  -H "Content-Type: application/json" \
+  -H "Authorization: OAuth $OAuth" \
+  -H "X-Org-Id: $XOrgId" \
+  -d '{
+    "summary":"'"$summary"'",
+    "queue":"TMP",
+    "type":"task",
+    "description":"'"$description"'",
+    "unique":"'"$unique"'"
+}'
+)
+
+if [ $response = 201 ]; then
+  echo "Release created successfully"
+elif [ $response = 404 ]; then
+  echo "Not found"
+elif [ $response = 409 ]; then
+  echo "Can't create release with the same unique"
+
+  taskID=$(
+    curl -s -X POST https://api.tracker.yandex.net/v2/issues/_search? \
+    -H "Content-Type: application/json" \
+    -H "Authorization: OAuth $OAuth" \
+    -H "X-Org-Id: $XOrgId" \
     -d '{
-    "summary": "New release "'"$currentTag"'",
-    "queue": "TMP",
-    "description": "'"$description"'",
-    "type": "release",
-    "unique": "'"$unique"'"
+    "filter": {
+         "unique":"'"$unique"'"
+      }
+    }' | jq -r '.[].id'
+  )
+
+    updateResponse=$(
+    curl -s -o dev/null -w '%{http_code}' -X PATCH https://api.tracker.yandex.net/v2/issues/$taskID \
+    -H "Content-Type: application/json" \
+    -H "Authorization: OAuth $OAuth" \
+    -H "X-Org-Id: $XOrgId" \
+    -d '{
+        "summary":"'"$summary"'",
+        "description":"'"$description"'"
     }')
 
-echo $response
-
-#if [ $response = 201 ]; then
-#  echo "Release created successfully"
-#  elif [ $response = 404 ]; then
-#  echo "Not found"
-#  elif [ $response = 409 ]; then
-#  ehcho "Can't create release with the same unique"
-#fi
+    if [ $updateResponse = 200 ]; then
+      echo "Release updated successfully"
+    elif [ $updateResponse = 404 ]; then
+      echo "Not found"
+    else [ $updateResponse = 409 ]
+      echo "Something went wrong with statusCode: $updateResponse"
+    fi
+fi
