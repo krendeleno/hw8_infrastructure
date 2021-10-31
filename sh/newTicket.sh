@@ -29,10 +29,10 @@ response=$(
   -H "Authorization: OAuth ${OAuth}" \
   -H "X-Org-Id: ${XOrgId}" \
   -d '{
-    "summary":"'"$summary"'",
+    "summary":"wow",
     "queue":"TMP",
     "type":"task",
-    "description":"'"$description"'",
+    "description":"test",
     "unique":"'"$unique"'"
 }'
 )

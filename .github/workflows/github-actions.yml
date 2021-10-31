@@ -14,7 +14,7 @@ jobs:
         run: npm run test
 
       - name: create ticket
-        run: sudo apt-get install -y jq && sh ./sh/newTicket.sh
+        run: sh ./sh/newTicket.sh
         env:
           OAuth: ${{ secrets.OAuth }}
           XOrgId: ${{ secrets.XOrgId }}
