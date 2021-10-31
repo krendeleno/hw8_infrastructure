@@ -11,17 +11,9 @@ else
 fi
 
 unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
-description=$(echo "**$currentTag\n$author\n$date**\n\nCommit history:\n$gitlog" | tr -s "\n" " ")
+description=$(echo "**$currentTag\n$author\n$date**" | tr -s "\n" " ")
 summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 
-
-if [ ${OAuth} ]; then
-echo "i have OAuth"
-fi
-
-if [ ${XOrgId} ]; then
-echo "i have id org"
-fi
 
 response=$(
   curl -s -X POST https://api.tracker.yandex.net/v2/issues \
@@ -32,7 +24,7 @@ response=$(
     "summary":"'"$summary"'",
     "queue":"TMP",
     "type":"task",
-    "description":"test",
+    "description":"'"$description"'",
     "unique":"'"$unique"'"
 }'
 )
