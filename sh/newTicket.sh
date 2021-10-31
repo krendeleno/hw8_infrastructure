@@ -66,6 +66,6 @@ elif [ $response = 409 ]; then
     else [ $updateResponse = 409 ]
       echo "Something went wrong with statusCode: $updateResponse"
     fi
-    else
-      echo "Something went wrong with statusCode: $response"
+  else
+    echo "Something went wrong with statusCode: $response"
 fi
