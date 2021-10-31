@@ -5,14 +5,13 @@ prevTag=$(git tag | sort -r | head -2 | tail -1)
 author=$(git show $currentTag  --pretty=format:"Author: %an" --no-patch)
 date=$(git show $currentTag  --pretty=format:"Date: %ad" --date=format:'%Y/%m/%d-%H:%M:%S' --no-patch)
 if [ $currentTag = $prevTag ]; then
-    gitlog=$(git log $currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
+    gitlog=$(git log $currentTag --pretty=format:"\\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
 else
-    gitlog=$(git log $prevTag..$currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
+    gitlog=$(git log $prevTag..$currentTag --pretty=format:"\\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
 fi
 
-
 unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
-description=$(echo "**$currentTag by $author ($date)** $gitlog" | tr -s "\n" " ")
+description=$(echo "**$currentTag by $author ($date)** $gitlog")
 summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 
 
