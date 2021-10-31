@@ -11,11 +11,9 @@ else
 fi
 
 unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
-description=$(echo "**$currentTag\n$author\n$date**\nCommit history:$gitlog" | tr -s "\n" " ")
+description=$(echo "**$currentTag\n$author\n$date**\n\nCommit history:\n$gitlog" | tr -s "\n" "\n")
 summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 
-echo $currentTag
-echo $prevTag
 
 response=$(
   curl -s -o dev/null -w '%{http_code}' -X POST https://api.tracker.yandex.net/v2/issues \
