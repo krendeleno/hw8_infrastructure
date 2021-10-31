@@ -11,7 +11,7 @@ else
 fi
 
 unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
-description=$(echo "**$currentTag by $author ($date)** $gitlog")
+description=$(echo "**$currentTag by $author ($date)** $gitlog" | tr -s "\n" " ")
 summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 
 
