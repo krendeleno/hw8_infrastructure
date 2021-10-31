@@ -7,11 +7,12 @@ date=$(git show $currentTag  --pretty=format:"Date: %ad" --date=format:'%Y/%m/%d
 if [ $currentTag = $prevTag ]; then
     gitlog=$(git log $currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
 else
-    gitlog=$(git log $prevTag..$currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
+    gitlog=$(git log $prevTag..$currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S' | tr -s "\n" " " )
 fi
 
+
 unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
-description=$(echo "**$currentTag\n$author\n$date**\n\nCommit history:\n$gitlog" | tr -s "\n" "\n")
+description=$(echo "**$currentTag\n$author\n$date**\n\nCommit history:\n$gitlog")
 summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 
 
@@ -66,4 +67,6 @@ elif [ $response = 409 ]; then
     else [ $updateResponse = 409 ]
       echo "Something went wrong with statusCode: $updateResponse"
     fi
+    else
+      echo "Something went wrong with statusCode: $response"
 fi
