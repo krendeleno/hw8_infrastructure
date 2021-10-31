@@ -17,8 +17,8 @@ summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 response=$(
   curl -s -o dev/null -w '%{http_code}' -X POST https://api.tracker.yandex.net/v2/issues \
   -H "Content-Type: application/json" \
-  -H "Authorization: OAuth ${OAuth}" \
-  -H "X-Org-Id: ${XOrgId}" \
+  -H "Authorization: OAuth $OAuth" \
+  -H "X-Org-Id: $XOrgId" \
   -d '{
     "summary":"'"$summary"'",
     "queue":"TMP",
