@@ -14,11 +14,20 @@ unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
 description=$(echo "**$currentTag\n$author\n$date**\n\nCommit history:\n$gitlog" | tr -s "\n" " ")
 summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 
+
+if [ ${OAuth} ]; then
+echo "i have OAuth"
+fi
+
+if [ ${XOrgId} ]; then
+echo "i have id org"
+fi
+
 response=$(
-  curl -s -o dev/null -w '%{http_code}' -X POST https://api.tracker.yandex.net/v2/issues \
+  curl -s -X POST https://api.tracker.yandex.net/v2/issues \
   -H "Content-Type: application/json" \
-  -H "Authorization: OAuth $OAuth" \
-  -H "X-Org-Id: $XOrgId" \
+  -H "Authorization: OAuth ${OAuth}" \
+  -H "X-Org-Id: ${XOrgId}" \
   -d '{
     "summary":"'"$summary"'",
     "queue":"TMP",
@@ -30,42 +39,40 @@ response=$(
 
 echo $response
 
-if [ $response = 201 ]; then
-  echo "Release created successfully"
-elif [ $response = 404 ]; then
-  echo "Not found"
-elif [ $response = 409 ]; then
-  echo "Can't create release with the same unique"
+#if [ $response = 201 ]; then
+#  echo "Release created successfully"
+#elif [ $response = 404 ]; then
+#  echo "Not found"
+#elif [ $response = 409 ]; then
+#  echo "Can't create release with the same unique"
 
-  taskID=$(
-    curl -s -X POST https://api.tracker.yandex.net/v2/issues/_search? \
-    -H "Content-Type: application/json" \
-    -H "Authorization: OAuth $OAuth" \
-    -H "X-Org-Id: $XOrgId" \
-    -d '{
-    "filter": {
-         "unique":"'"$unique"'"
-      }
-    }' | jq -r '.[].id'
-  )
-
-    updateResponse=$(
-    curl -s -o dev/null -w '%{http_code}' -X PATCH https://api.tracker.yandex.net/v2/issues/$taskID \
-    -H "Content-Type: application/json" \
-    -H "Authorization: OAuth $OAuth" \
-    -H "X-Org-Id: $XOrgId" \
-    -d '{
-        "summary":"'"$summary"'",
-        "description":"'"$description"'"
-    }')
-
-    echo $updateResponse
-
-    if [ $updateResponse = 200 ]; then
-      echo "Release updated successfully"
-    elif [ $updateResponse = 404 ]; then
-      echo "Not found"
-    else [ $updateResponse = 409 ]
-      echo "Something went wrong with statusCode: $updateResponse"
-    fi
-fi
+#  taskID=$(
+#    curl -s -X POST https://api.tracker.yandex.net/v2/issues/_search? \
+#    -H "Content-Type: application/json" \
+#    -H "Authorization: OAuth $OAuth" \
+#    -H "X-Org-Id: $XOrgId" \
+#    -d '{
+#    "filter": {
+#         "unique":"'"$unique"'"
+#      }
+#    }' | jq -r '.[].id'
+#  )
+#
+#    updateResponse=$(
+#    curl -s -o dev/null -w '%{http_code}' -X PATCH https://api.tracker.yandex.net/v2/issues/$taskID \
+#    -H "Content-Type: application/json" \
+#    -H "Authorization: OAuth $OAuth" \
+#    -H "X-Org-Id: $XOrgId" \
+#    -d '{
+#        "summary":"'"$summary"'",
+#        "description":"'"$description"'"
+#    }')
+#
+#    if [ $updateResponse = 200 ]; then
+#      echo "Release updated successfully"
+#    elif [ $updateResponse = 404 ]; then
+#      echo "Not found"
+#    else [ $updateResponse = 409 ]
+#      echo "Something went wrong with statusCode: $updateResponse"
+#    fi
+#fi
