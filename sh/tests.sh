@@ -28,7 +28,7 @@ testResult=$(npm run test 2>&1 | tr "\\\\\\\\" "/"| tr -s "\n" " ")
     }')
 
     if [ $comment = 201 ]; then
-      echo "Release updated successfully"
+      echo "Tests result added successfully"
     elif [ $comment = 404 ]; then
       echo "Not found"
     else
