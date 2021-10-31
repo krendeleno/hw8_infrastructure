@@ -1,11 +1,11 @@
 #! /bin/bash
 
-currentTag=$(git tag | tail -1)
-prevTag=$(git tag | tail -2 | head -1)
+currentTag=$(git tag | tail -1 | head -n1)
+prevTag=$(git tag | tail -2 | head -n1)
 author=$(git show $currentTag  --pretty=format:"Author: %an" --date=format:'%Y-%m-%d %H:%M:%S' --no-patch)
 date=$(git show $currentTag  --pretty=format:"Date: %ad" --date=format:'%Y-%m-%d %H:%M:%S'  --no-patch)
 if [ $currentTag = $prevTag ]; then
-    gitlog=$(git log $prevTag..$currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
+    gitlog=$(git log $currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
 else
     gitlog=$(git log $prevTag..$currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
 fi
@@ -14,6 +14,8 @@ unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
 description=$(echo "**$currentTag\n$author\n$date**\nCommit history:$gitlog" | tr -s "\n" " ")
 summary="New release $currentTag from github.com/krendeleno/hw8_infrastructure"
 
+echo $currentTag
+echo $prevTag
 
 response=$(
   curl -s -o dev/null -w '%{http_code}' -X POST https://api.tracker.yandex.net/v2/issues \
