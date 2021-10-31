@@ -3,7 +3,7 @@
 currentTag=$(git tag | sort -r | head -1)
 unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
 
-docker build -t release:$currentTag .
+docker build -t release:"$currentTag" .
 
 if [ $? = 0 ]; then
   echo "Docker-image created successfully"
