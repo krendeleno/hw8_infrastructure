@@ -29,7 +29,7 @@ response=$(
   -H "Authorization: OAuth ${OAuth}" \
   -H "X-Org-Id: ${XOrgId}" \
   -d '{
-    "summary":"wow",
+    "summary":"'"$summary"'",
     "queue":"TMP",
     "type":"task",
     "description":"test",
