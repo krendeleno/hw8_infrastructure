@@ -21,3 +21,9 @@ jobs:
         env:
           OAuth: ${{ secrets.OAuth }}
           XOrgId: ${{ secrets.XOrgId }}
+
+      - name: docker
+        run: sh ./sh/docker.sh
+        env:
+          OAuth: ${{ secrets.OAuth }}
+          XOrgId: ${{ secrets.XOrgId }}
