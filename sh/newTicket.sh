@@ -1,7 +1,7 @@
 #! /bin/bash
 
-currentTag=$(git tag | tail -1 | head -n1)
-prevTag=$(git tag | tail -2 | head -n1)
+currentTag=$(git tag | sort -r | head -1)
+prevTag=$(git tag | sort -r | head -2 | tail -1)
 author=$(git show $currentTag  --pretty=format:"Author: %an" --date=format:'%Y-%m-%d %H:%M:%S' --no-patch)
 date=$(git show $currentTag  --pretty=format:"Date: %ad" --date=format:'%Y-%m-%d %H:%M:%S'  --no-patch)
 if [ $currentTag = $prevTag ]; then
@@ -31,7 +31,6 @@ response=$(
 }'
 )
 
-echo $response
 
 if [ $response = 201 ]; then
   echo "Release created successfully"
