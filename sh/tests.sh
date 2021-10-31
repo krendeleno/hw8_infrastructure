@@ -1,5 +1,5 @@
 #! /bin/bash
-currentTag=$(git tag | sort -r | head -1)
+currentTag=$(git tag | tail -1)
 unique="https://github.com/krendeleno/hw8_infrastructure/$currentTag"
 
 
