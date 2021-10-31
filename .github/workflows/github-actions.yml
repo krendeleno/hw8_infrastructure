@@ -10,11 +10,14 @@ jobs:
           node-version: '14'
       - run: npm install
 
-      - name: run tests
-        run: npm run test
-
-      - name: create ticket
+      - name: create/update ticket
         run: sh ./sh/newTicket.sh
+        env:
+          OAuth: ${{ secrets.OAuth }}
+          XOrgId: ${{ secrets.XOrgId }}
+
+      - name: run tests
+        run: sh ./sh/tests.sh
         env:
           OAuth: ${{ secrets.OAuth }}
           XOrgId: ${{ secrets.XOrgId }}

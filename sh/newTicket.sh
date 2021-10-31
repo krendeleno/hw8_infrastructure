@@ -2,8 +2,8 @@
 
 currentTag=$(git tag | sort -r | head -1)
 prevTag=$(git tag | sort -r | head -2 | tail -1)
-author=$(git show $currentTag  --pretty=format:"Author: %an" --date=format:'%Y-%m-%d %H:%M:%S' --no-patch)
-date=$(git show $currentTag  --pretty=format:"Date: %ad" --date=format:'%Y-%m-%d %H:%M:%S'  --no-patch)
+author=$(git show $currentTag  --pretty=format:"Author: %an" --no-patch)
+date=$(git show $currentTag  --pretty=format:"Date: %ad" --date=format:'%Y/%m/%d-%H:%M:%S' --no-patch)
 if [ $currentTag = $prevTag ]; then
     gitlog=$(git log $currentTag --pretty=format:"\n* %h %an %ad %s" --date=format:'%Y/%m/%d-%H:%M:%S')
 else
